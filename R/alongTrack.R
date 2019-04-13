@@ -25,7 +25,13 @@ alongTrackDistance <- function(p1, p2, p3, r=6378137) {
 
 # +1/-1 for ahead/behind [lat1,lon1]
 	bearing <- sign(cos(tc - tcp))  
-	dist <- bearing * acos(cos(dp) / cos(xtr)) * r
+	dummy <- cos(dp)/cos(xtr)
+	if (any(dummy < -1)){
+	  if (length(which(dummy < -1)) > 1) stop("more than one < -1 value??????")
+	  w <- which(dummy < -1)
+	  dummy[w] <- -1
+	}
+	dist <- bearing * acos(dummy) * r
 	
 	if (is.vector(dist)) { dist <- matrix(dist) }
 	colnames(dist) <- 'distance'
